@@ -89,14 +89,21 @@ def cli(*args):
     parser.add_argument('--udp', action='store_true',
                         help="Use UDP instead of TCP")
 
+    parser.add_argument('-s', '--status', action='store_true',
+                        help="Just return HTTP status code")
+
     args = parser.parse_args(args or sys.argv[1:])
 
     response = curl(uwsgi_addr=args.uwsgi_addr[0], method=args.method,
                     url=args.url, body=args.data, timeout=args.timeout,
                     headers=args.headers, udp=args.udp)
-    print(response)
 
     status = int(response.split(' ', 2)[1])
+
+    if args.status:
+        print status
+    else:
+        print response
     return not (200 <= status < 300)
 
 
